@@ -17,9 +17,13 @@ router.get('/api/cars', (req, res, next) => {
 })
 
 router.get('/api/cars/:id', (req, res, next) => {
-  Car.findById(req.params.id)
-    .then(car => res.json(car))
-    .catch(next)
+  if (Car.findById(req.params.id) === true) {
+    Car.findById(req.params.id)
+      .then(car => res.json(car))
+      .catch(next)
+    return
+  }
+  res.status(404).send('not found')
 })
 
 router.put('/api/cars/:id', jsonParser, (req, res, next) => {
