@@ -10,6 +10,12 @@ router.post('/api/cars', jsonParser, (req, res, next) => {
     .catch(next)
 })
 
+router.get('/api/cars', (req, res, next) => {
+  Car.find({})
+    .then(schema => res.json(schema))
+    .catch(next)
+})
+
 router.get('/api/cars/:id', (req, res, next) => {
   Car.findById(req.params.id)
     .then(car => res.json(car))
