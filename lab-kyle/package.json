@@ -21,6 +21,9 @@
     "mongoose": "^4.7.5"
   },
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-mocha": "^3.0.1",
     "mocha": "^3.2.0"
   }
 }
