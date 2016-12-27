@@ -1,7 +1,9 @@
 let express = require('express')
 let mongoose = require('mongoose')
+let morgan = require('morgan')
+app.use(morgan)
 
-let MONGO_URI = process.env.MONGO_URI
+let MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost/cars';
 let PORT = process.env.PORT || 3000
 
 mongoose.Promise = Promise
