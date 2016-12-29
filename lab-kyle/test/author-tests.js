@@ -1,13 +1,13 @@
 let expect = require('chai').expect
 let request = require('superagent')
 let mongoose = require('mongoose')
-// let ObjectId = require('mongoose').Types.ObjectId
 
-let Car = require('../model/car')
+let Author = require('../model/author')
 let url = 'http://localhost:3000/api'
 
 let testCar = {
-  name: 'Kia'
+  name: 'Neal Stephenson'
+  // books:
 }
 
 describe('a restfull endpoint', function() {

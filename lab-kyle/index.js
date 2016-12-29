@@ -2,7 +2,7 @@ let express = require('express')
 let mongoose = require('mongoose')
 let morgan = require('morgan')
 
-let MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost/cars';
+let MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost/authors';
 let PORT = process.env.PORT || 3000
 
 mongoose.Promise = Promise
@@ -11,8 +11,8 @@ mongoose.connect(MONGO_URI)
 let app = express()
 app.use(morgan('dev'))
 
-let carRouter = require('./route/car-routes')
-app.use(carRouter)
+let authorRouter = require('./route/author-routes')
+app.use(authorRouter)
 
 module.exports = app
 
