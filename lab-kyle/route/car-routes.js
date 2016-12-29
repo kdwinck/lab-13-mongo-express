@@ -17,17 +17,13 @@ router.get('/api/cars', (req, res, next) => {
 })
 
 router.get('/api/cars/:id', (req, res, next) => {
-  if (Car.findById(req.params.id) === true) {
-    Car.findById(req.params.id)
-      .then(car => res.json(car))
-      .catch(next)
-    return
-  }
-  res.status(404).send('not found')
+  Car.findById(req.params.id)
+    .then(car => res.json(car))
+    .catch(next)
 })
 
 router.put('/api/cars/:id', jsonParser, (req, res, next) => {
-  Car.update(req.params.id, req.body)
+  Car.findOneAndUpdate(req.params.id, req.body, {new: true})
     .then(car => res.json(car))
     .catch(next)
 })
