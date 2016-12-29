@@ -6,6 +6,7 @@ let MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost/authors';
 let PORT = process.env.PORT || 3000
 
 mongoose.Promise = Promise
+require('./seeds/seed')
 mongoose.connect(MONGO_URI)
 
 let app = express()
