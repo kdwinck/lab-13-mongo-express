@@ -38,7 +38,7 @@ router.put('/api/cars/:id', jsonParser, (req, res) => {
   }
 })
 
-router.delete('/api/cars/:id', (req, res, next) => {
+router.delete('/api/cars/:id', (req, res) => {
   Car.findOneAndRemove(req.params.id)
     .then(car => res.json(car))
     .catch(() => {
