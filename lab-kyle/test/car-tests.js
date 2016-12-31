@@ -24,16 +24,16 @@ describe('a restfull endpoint', function() {
   //   server.close()
   // })
 
-  // describe('an unregisterd route', function() {
-  //   it('will respond 404', function(done) {
-  //     request.get(`${url}/cars/1234`)
-  //     .end((err, res) => {
-  //       expect(res.status).to.equal(404)
-  //       expect(res.text).to.equal('not found')
-  //       done()
-  //     })
-  //   })
-  // })
+  describe('an unregisterd route', function() {
+    it('will respond 404', function(done) {
+      request.get(`${url}/cars/1234`)
+      .end((err, res) => {
+        expect(res.status).to.equal(404)
+        expect(res.text).to.equal('not found')
+        done()
+      })
+    })
+  })
 
   describe('GET', function() {
 
@@ -47,6 +47,7 @@ describe('a restfull endpoint', function() {
           })
       })
     })
+
     describe('/api/cars/:id', function() {
 
       before( done => {
@@ -84,15 +85,27 @@ describe('a restfull endpoint', function() {
     it('can create a new car', function(done) {
       request.post(`${url}/cars/`)
         .send({name: 'Chevy'})
-        .end((err)  => {
+        .end( (err, res)  => {
           if (err) return done(err)
+          expect(res.status).to.equal(200)
+          expect(res.body.name).to.equal('Chevy')
+          done()
+        })
+    })
+
+    it('will throw an error if no body is provided', function(done) {
+      request.post(`${url}/cars/`)
+        .end( (err, res) => {
+          expect(res.status).to.equal(400)
+          expect(res.text).to.equal('bad request')
           done()
         })
     })
   })
+
   describe('PUT', function() {
 
-    before( done => {
+    beforeEach( done => {
       new Car(testCar).save()
         .then( car => {
           this.testCar = car
@@ -101,7 +114,7 @@ describe('a restfull endpoint', function() {
         .catch(done)
     })
 
-    after( done => {
+    afterEach( done => {
       Car.remove({})
         .then( () => done())
         .catch(done)
@@ -116,6 +129,24 @@ describe('a restfull endpoint', function() {
           done()
         })
     })
+    it('will return 400 if no body is provided', function(done) {
+      request.put(`${url}/cars/${this.testCar._id}`)
+        .end( (err, res) => {
+          expect(res.status).to.equal(400)
+          expect(res.text).to.equal('bad request')
+          done()
+        })
+    })
+    it('will return 404 if provided an invalid id', function(done) {
+      request.put(`${url}/cars/fail`)
+        .send({name: 'Toyota'})
+        .end( (err, res) => {
+          expect(res.status).to.equal(404)
+          expect(res.text).to.equal('bad request')
+          done()
+        })
+    })
+
     describe('DELETE', function() {
 
       before( done => {
