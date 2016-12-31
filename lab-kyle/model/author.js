@@ -3,7 +3,7 @@ let Schema = mongoose.Schema
 let Book = require('./book')
 
 let authorSchema = Schema({
-  name: {type: String, require: true},
+  name: {type: String, require: true, unique: true},
   books: [{ type: mongoose.Schema.ObjectId, ref: 'Book' }]
 })
 
