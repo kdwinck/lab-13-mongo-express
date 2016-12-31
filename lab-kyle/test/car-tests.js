@@ -82,69 +82,78 @@ describe('a restfull endpoint', function() {
         .catch(done)
     })
 
-    it('can create a new car', function(done) {
-      request.post(`${url}/cars/`)
-        .send({name: 'Chevy'})
-        .end( (err, res)  => {
-          if (err) return done(err)
-          expect(res.status).to.equal(200)
-          expect(res.body.name).to.equal('Chevy')
-          done()
-        })
-    })
+    describe('/api/cars/', function() {
 
-    it('will throw an error if no body is provided', function(done) {
-      request.post(`${url}/cars/`)
-        .end( (err, res) => {
-          expect(res.status).to.equal(400)
-          expect(res.text).to.equal('bad request')
-          done()
-        })
+      it('can create a new car', function(done) {
+        request.post(`${url}/cars/`)
+          .send({name: 'Chevy'})
+          .end( (err, res)  => {
+            if (err) return done(err)
+            expect(res.status).to.equal(200)
+            expect(res.body.name).to.equal('Chevy')
+            done()
+          })
+      })
+
+      it('will throw an error if no body is provided', function(done) {
+        request.post(`${url}/cars/`)
+          .end( (err, res) => {
+            expect(res.status).to.equal(400)
+            expect(res.text).to.equal('bad request')
+            done()
+          })
+      })
     })
   })
 
   describe('PUT', function() {
 
-    beforeEach( done => {
-      new Car(testCar).save()
+
+    describe('/api/cars/id', function() {
+
+      before( done => {
+        new Car(testCar).save()
         .then( car => {
           this.testCar = car
           done()
         })
         .catch(done)
-    })
+      })
 
-    afterEach( done => {
-      Car.remove({})
+      after( done => {
+        Car.remove({})
         .then( () => done())
         .catch(done)
-    })
+      })
 
-    it('can update a car', done => {
-      request.put(`${url}/cars/${this.testCar._id}`)
-        .send({name: 'Toyota'})
-        .end( (err, res) => {
-          expect(res.status).to.equal(200)
-          expect(res.body.name).to.equal('Toyota')
-          done()
-        })
-    })
-    it('will return 400 if no body is provided', function(done) {
-      request.put(`${url}/cars/${this.testCar._id}`)
-        .end( (err, res) => {
-          expect(res.status).to.equal(400)
-          expect(res.text).to.equal('bad request')
-          done()
-        })
-    })
-    it('will return 404 if provided an invalid id', function(done) {
-      request.put(`${url}/cars/fail`)
-        .send({name: 'Toyota'})
-        .end( (err, res) => {
-          expect(res.status).to.equal(404)
-          expect(res.text).to.equal('bad request')
-          done()
-        })
+      it('can update a car', done => {
+        request.put(`${url}/cars/${this.testCar._id}`)
+          .send({name: 'Toyota'})
+          .end( (err, res) => {
+            expect(res.status).to.equal(200)
+            expect(res.body.name).to.equal('Toyota')
+            done()
+          })
+      })
+      it('will return 400 if no body is provided', done => {
+        request.put(`${url}/cars/${this.testCar._id}`)
+          .end( (err, res) => {
+            expect(res.status).to.equal(400)
+            expect(res.text).to.equal('bad request')
+            done()
+          })
+      })
+
+      // dont know why this test fails, perhaps something with the model?
+      it('will return 404 if provided an invalid id', done => {
+        request.put(`${url}/cars/fail`)
+          .send({name: 'Toyota'})
+          .end( (err, res) => {
+            expect(res.status).to.equal(404)
+            expect(res.text).to.equal('not found')
+            done()
+          })
+      })
     })
 
     describe('DELETE', function() {
@@ -163,6 +172,16 @@ describe('a restfull endpoint', function() {
           .end( (err, res) => {
             expect(res.status).to.equal(200)
             // expect(res.body).to.equal({})
+            done()
+          })
+      })
+
+      // dont know why this one doesnt work either....
+      it('will return not found with invalid id', done => {
+        request.delete(`${url}/cars/${this.testCar._id}`)
+          .end( (err, res) => {
+            expect(res.status).to.equal(400)
+            expect(res.text).to.equal('not found')
             done()
           })
       })

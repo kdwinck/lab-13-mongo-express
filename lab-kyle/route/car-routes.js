@@ -27,7 +27,7 @@ router.get('/api/cars/:id', (req, res) => {
 })
 
 router.put('/api/cars/:id', jsonParser, (req, res) => {
-  if (req.body) {
+  if (req.body.name) {
     Car.findOneAndUpdate(req.params.id, req.body, {new: true})
         .then(car => res.json(car))
         .catch(() => {
@@ -39,7 +39,9 @@ router.put('/api/cars/:id', jsonParser, (req, res) => {
 })
 
 router.delete('/api/cars/:id', (req, res, next) => {
-  Car.remove(req.params.id)
+  Car.findOneAndRemove(req.params.id)
     .then(car => res.json(car))
-    .catch(next)
+    .catch(() => {
+      res.status(404).send('not found')
+    })
 })
