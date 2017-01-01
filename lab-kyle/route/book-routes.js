@@ -22,16 +22,17 @@ router.get('/api/books/:id', (req, res) => {
 })
 
 router.post('/api/books/:id', jsonParser, (req, res) => {
+  let newBook
   Author.findById(req.params.id)
     .then(author => {
       new Book(req.body).save()
     .then(book => {
+      newBook = book
       author.books.push(book)
       author.save()
     })
-    .catch(() => {
-      res.status(400).send('bad request')
-    })
+    .then(() => res.json(newBook))
+    .catch(() => res.status(400).send('bad request'))
     })
 })
 

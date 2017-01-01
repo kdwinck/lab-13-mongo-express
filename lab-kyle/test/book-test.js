@@ -9,12 +9,12 @@ let Author = require('../model/author')
 
 let url = 'http://localhost:3000/api'
 
-// let alfred = new Author({ name: 'Alfred Bester' }).save()
-//
-// let testBook = {
-//   _author: alfred._id,
-//   title: 'The Stars My Destination'
-// }
+let alfred = new Author({ name: 'Alfred Bester' }).save()
+
+let testBook = {
+  _author: alfred._id,
+  title: 'The Stars My Destination'
+}
 
 describe('a restfull endpoint', function() {
 
@@ -41,23 +41,29 @@ describe('a restfull endpoint', function() {
           })
       })
     })
+
     describe('/api/books/:id', function() {
 
       before( done => {
         new Author({ name: 'Alfred Bester' }).save()
-          .then(alfred => {
-            new Book({ _author: alfred._id, title: 'The Stars My Destination' }).save()
+          .then(neal => {
+            new Book({ _author: neal._id, title: 'The Stars My Destination' }).save()
             .then(book => {
               this.testBook = book
-              alfred.books.push(book)
-              alfred.save()
+              neal.books.push(book)
+              neal.save().then(() => {
+                done()
+              })
             })
-            .then(() => done())
           })
       })
+
       after( done => {
         Book.remove({})
-          .then( () => done())
+          .then( () => {
+            Author.remove({})
+            done()
+          })
           .catch(done)
       })
 
@@ -73,6 +79,16 @@ describe('a restfull endpoint', function() {
   })
 
   describe('POST', function() {
+
+    before( done => {
+      new Author({ name: 'Roger Zelazny' }).save()
+      .then( author => {
+        this.author = author
+        done()
+      })
+      .catch(done)
+    })
+
     after( done => {
       Book.remove({})
         .then( () => done())
@@ -80,12 +96,41 @@ describe('a restfull endpoint', function() {
     })
 
     it('can create a new Book', done => {
-      request.post(`${url}/books/`)
-        .send({name: 'William Gibson'})
+      request.post(`${url}/books/${this.author._id}`)
+        .send({title: 'Hello World'})
         .end((err, res)  => {
           if (err) return done(err)
           expect(res.status).to.equal(200)
-          expect(res.body.name).to.equal('William Gibson')
+          expect(res.body.title).to.equal('Hello World')
+          done()
+        })
+    })
+
+    it('will throw an error if no body is provided', done => {
+      request.post(`${url}/books/${this.author._id}`)
+        .end((err, res)  => {
+          expect(res.status).to.equal(400)
+          // expect(res.body.title).to.equal('bad request')
+          done()
+        })
+    })
+  })
+
+  describe('DELETE', function() {
+    before( done => {
+      new Book(testBook).save()
+        .then( book => {
+          this.testBook = book
+          done()
+        })
+        .catch(done)
+    })
+
+    it('can delete a book', done => {
+      request.delete(`${url}/books/${this.testBook._id}`)
+        .end( (err, res) => {
+          expect(res.status).to.equal(200)
+          // expect(res.body).to.equal({})
           done()
         })
     })
