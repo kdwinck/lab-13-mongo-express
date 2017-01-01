@@ -1,6 +1,8 @@
+'use strict'
+
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
-let Book = require('./book')
+// let Book = require('./book')
 
 let authorSchema = Schema({
   name: {type: String, require: true, unique: true},

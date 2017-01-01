@@ -1,4 +1,6 @@
+'use strict'
 // let mongoose = require('mongoose')
+
 let Book  = require('../model/book')
 let Author = require('../model/author')
 
