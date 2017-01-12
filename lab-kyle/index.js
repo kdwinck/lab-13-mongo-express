@@ -17,7 +17,7 @@ app.use(morgan('dev'))
 let authorRouter = require('./route/author-routes')
 let bookRouter = require('./route/book-routes')
 app.use(authorRouter)
-app.use(bookRouter)
+// app.use(bookRouter)
 
 module.exports = app
 

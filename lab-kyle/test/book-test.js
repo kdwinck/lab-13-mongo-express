@@ -25,7 +25,6 @@ describe('a restfull endpoint', function() {
         request.get(`${url}/books/something`)
         .end((err, res) => {
           expect(res.status).to.equal(404)
-          expect(res.text).to.equal('not found')
           done()
         })
       })
@@ -42,7 +41,7 @@ describe('a restfull endpoint', function() {
       })
     })
 
-    describe('/api/books/:id', function() {
+    describe('/api/authors/books/:id', function() {
 
       before( done => {
         new Author({ name: 'Alfred Bester' }).save()
@@ -68,7 +67,7 @@ describe('a restfull endpoint', function() {
       })
 
       it('can fetch a book schema object', done => {
-        request.get(`${url}/books/${this.testBook._id}`)
+        request.get(`${url}/authors/books/${this.testBook._id}`)
           .end( (err, res) => {
             expect(res.status).to.equal(200)
             expect(res.body.title).to.equal('The Stars My Destination')
@@ -96,7 +95,7 @@ describe('a restfull endpoint', function() {
     })
 
     it('can create a new Book', done => {
-      request.post(`${url}/books/${this.author._id}`)
+      request.post(`${url}/authors/${this.author._id}/books`)
         .send({title: 'Hello World'})
         .end((err, res)  => {
           if (err) return done(err)
@@ -107,10 +106,10 @@ describe('a restfull endpoint', function() {
     })
 
     it('will throw an error if no body is provided', done => {
-      request.post(`${url}/books/${this.author._id}`)
+      request.post(`${url}/authors/${this.author._id}/books`)
         .end((err, res)  => {
           expect(res.status).to.equal(400)
-          // expect(res.body.title).to.equal('bad request')
+          expect(res.text).to.equal('bad request')
           done()
         })
     })
